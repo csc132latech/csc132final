@@ -3,45 +3,101 @@
 ### app monitors moisture and light levels of a potted plant.
 ### Features: Touchscreen GUI, Current data on screen, view plotted historical data by day and month
 
-from Tkinter import *
+import Tkinter as tk
+from time import *
+#import spidev
+
+Demo = True # Use True to activate elements for testing without input data
 
 # class for creating the window
-class GUI(Frame):
-    def __init__(self, master):
-        Frame.__init__(self, master)
-        self.master = master
+class SmartPot(tk.Tk):
 
-    def setupGUI(self):
-        a1 = Label(self.master, text='Photo Level')
-        a1.grid(row = 1, column = 1, columnspan = 2, sticky="E" + "W")
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
 
-        a2 = Label(self.master, text='Moisture Level')
-        a2.grid(row= 1, column = 3, columnspan = 2, sticky = 'W')
+        # variable containing the frame
+        container = tk.Frame(self)
 
-        b1 = Label(self.master, text = '0')
-        b1.grid(row = 2, column = 1, columnspan = 2, sticky = "E" + 'W')
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
-        b2 = Label(self.master, text = '0')
-        b2.grid(row = 2, column = 3, columnspan = 2, sticky = 'E'+'W')
+        # dictionary containing the various frames
+        self.frames = {}
 
-        a3 = Scale(self.master, orient=HORIZONTAL, length = 100, from_=1.0, to=100)
-        a3.grid(row = 3, column = 1, columnspan = 2, sticky ='E'+'W')
+        frame = HomePage(container, self)
 
-        b3 = Scale(self.master, orient=HORIZONTAL, length = 100, from_=1.0, to=100)
-        b3.grid(row = 3, column = 3, columnspan = 2, sticky ='E'+'W')
+        self.frames[HomePage] = frame
 
+        # defaults Home Page to be the first visible
+        self.show_frame(HomePage)
+
+    # method for moving a frame to the front of the container
+    def show_frame(self, cont):
+
+        frame = self.frames[cont]
+        frame.tkraise()
+
+# Sets up the Home Page
+class HomePage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text = "Smart Pot")
+        label.grid(row=0, column=0, sticky='nsew')
+
+        moistLabel = tk.Label(self, text = "Moisture Level")
+        moistLabel.grid(row=1, column=0, sticky='nsew')
+
+        photoLabel = tk.Label(self, text = "Light Level")
+        photoLabel.grid(row=1, column=1, sticky='nsew')
+
+        previousdayLabel = tk.Label(self, text = "Previous Day Plot")
+        previousdayLabel.grid(row=2, column=1, sticky='nsew')
+
+        sevendayLabel = tk.Label(self, text = "Seven Day Plot")
+        sevendayLabel.grid(row=2, column=2, sticky='nsew')
+   
     
     #function for changing listed moisture sensor value
-    def currentMoisture(self):
+    def currentMoisture(self, channel):
         pass
+        # spi = spidev.SpiDev()
+        # spi.open(0,0)
+        # spi.max_speed_hz = 250000
+
+        # assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
+
+        # if channel:
+        #     cbyte = 0b11000000
+        # else:
+        #     cbyte = 0b10000000
+
+        # r = spi.xfer2([1,cbyte,0])
+        # return ((r[1] & 31) << 6) + (r[2] >> 2)
+
+        # try:
+        #     while True:
+        #         channel = 0
+        #         channeldata = poll_sensor(channel)
+
+
+        #         voltage = round(((channeldata * 3300)/1024),0)
+        #         moisture_level = round(voltage/280)
+        #         #print moisture_level
+
+        #         sleep(2)
+
+        # finally:
+        #     spi.close()
+        #     #print "/n All cleaned up."
+
+        # return moisture_level
 
     #function for changing listed moisture sensor value
     def currentPhoto(self):
         pass
 
 #create new instance of GUI class
-window = Tk()
-t = GUI(window)
-t.setupGUI()
+window = SmartPot()
 window.mainloop()
 

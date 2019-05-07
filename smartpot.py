@@ -93,9 +93,12 @@ class HomePage(tk.Frame):
 
 
         # test graph values
-        f = Figure(figsize=(2,2), dpi=100)
-        a = f.add_subplot(111)
-        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        if Demo == True:
+            f = Figure(figsize=(2,2), dpi=100)
+            a = f.add_subplot(111)
+            a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        else:
+            pass
 
         # basic plot funtions for embedding a photo and moisture monitor graph
         photoplot = FigureCanvasTkAgg(f, self)

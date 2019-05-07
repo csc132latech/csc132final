@@ -10,8 +10,13 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2TkAgg)
 from matplotlib.figure import Figure
 import datetime
-#from time import *
-#import spidev
+from time import sleep
+import spidev
+
+   
+spi = spidev.SpiDev()
+spi.open(0,0)
+spi.max_speed_hz = 250000
 
 Demo = True # Use True to activate elements for testing without input data
 
@@ -105,7 +110,7 @@ class HomePage(tk.Frame):
 
 
     #function for changing listed moisture sensor value
-def currentMoisture(self, channel):
+def currentMoisture(channel):
     datetime_current = datetime.datetime.now()
     if Demo == True:
         moisture_level = random.randint(50, 65)
@@ -113,53 +118,47 @@ def currentMoisture(self, channel):
         return poll_update
     
     else:
-        pass
-        #acutal sensor calculation    
-        # spi = spidev.SpiDev()
-        # spi.open(0,0)
-        # spi.max_speed_hz = 250000
+        assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
 
-        # assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
+        if channel:
+            cbyte = 0b11000000
+        else:
+            cbyte = 0b10000000
 
-        # if channel:
-        #     cbyte = 0b11000000
-        # else:
-        #     cbyte = 0b10000000
+        r = spi.xfer2([1,cbyte,0])
+        return ((r[1] & 31) << 6) + (r[2] >> 2)
 
-        # r = spi.xfer2([1,cbyte,0])
-        # return ((r[1] & 31) << 6) + (r[2] >> 2)
-
-        # try:
-        #     while True:
-        #         channel = 0
-        #         channeldata = poll_sensor(channel)
+        try:    
+            channel = 0
+            channeldata = poll_sensor(channel)
 
 
-        #         voltage = round(((channeldata * 3300)/1024),0)
-        #         moisture_level = round(voltage/280)
-        #         #print moisture_level
+            voltage = round(((channeldata * 3300)/1024),0)
+            moisture_level = round(voltage/280)
+            #print moisture_level
 
-        #         sleep(2)
+            sleep(2)
 
-        # finally:
-        #     spi.close()
-        #     #print "/n All cleaned up."
-        #return moisture_level
+        finally:
+            spi.close()
+            #print "/n All cleaned up."
+        moisture_level = moisture_level * 10
+        return moisture_level
 
             #function for changing listed moisture sensor value
 
 
-def currentPhoto(self):
-    photo_level = 0
-    if Demo == True:
-        # demo number generation
-        photo_level = random.randint(0, 1000)
-        return photo_level
-    else:
-        pass
-        # actual sensor calculation
+# def currentPhoto(self):
+#     photo_level = 0
+#     if Demo == True:
+#         # demo number generation
+#         photo_level = random.randint(0, 1000)
+#         return photo_level
+#     else:
+#         pass
+#         # actual sensor calculation
 
-        #return photo_level
+#         #return photo_level
 
 #create new instance of GUI class
 window = SmartPot()

@@ -4,7 +4,8 @@
 ### Features: Touchscreen GUI, Current data on screen, view plotted historical data by day and month
 
 import Tkinter as tk
-from time import *
+import random
+#from time import *
 #import spidev
 
 Demo = True # Use True to activate elements for testing without input data
@@ -27,6 +28,8 @@ class SmartPot(tk.Tk):
         frame = HomePage(container, self)
 
         self.frames[HomePage] = frame
+
+        frame.grid(row=0, column=0, sticky="nsew")
 
         # defaults Home Page to be the first visible
         self.show_frame(HomePage)
@@ -60,42 +63,52 @@ class HomePage(tk.Frame):
     
     #function for changing listed moisture sensor value
     def currentMoisture(self, channel):
-        pass
-        # spi = spidev.SpiDev()
-        # spi.open(0,0)
-        # spi.max_speed_hz = 250000
+        moisture_level = 0
+        if Demo == True:
+            moisture_level = random.randint(50, 65)
+        else:
+            #acutal sensor calculation    
+            # spi = spidev.SpiDev()
+            # spi.open(0,0)
+            # spi.max_speed_hz = 250000
 
-        # assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
+            # assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
 
-        # if channel:
-        #     cbyte = 0b11000000
-        # else:
-        #     cbyte = 0b10000000
+            # if channel:
+            #     cbyte = 0b11000000
+            # else:
+            #     cbyte = 0b10000000
 
-        # r = spi.xfer2([1,cbyte,0])
-        # return ((r[1] & 31) << 6) + (r[2] >> 2)
+            # r = spi.xfer2([1,cbyte,0])
+            # return ((r[1] & 31) << 6) + (r[2] >> 2)
 
-        # try:
-        #     while True:
-        #         channel = 0
-        #         channeldata = poll_sensor(channel)
+            # try:
+            #     while True:
+            #         channel = 0
+            #         channeldata = poll_sensor(channel)
 
 
-        #         voltage = round(((channeldata * 3300)/1024),0)
-        #         moisture_level = round(voltage/280)
-        #         #print moisture_level
+            #         voltage = round(((channeldata * 3300)/1024),0)
+            #         moisture_level = round(voltage/280)
+            #         #print moisture_level
 
-        #         sleep(2)
+            #         sleep(2)
 
-        # finally:
-        #     spi.close()
-        #     #print "/n All cleaned up."
-
-        # return moisture_level
+            # finally:
+            #     spi.close()
+            #     #print "/n All cleaned up."
+        return moisture_level
 
     #function for changing listed moisture sensor value
     def currentPhoto(self):
-        pass
+        photo_level = 0
+        if Demo == True:
+            # demo number generation
+            photo_level = random.randint(0, 1000)
+        else:
+            # actual sensor calculation
+
+        return photo_level
 
 #create new instance of GUI class
 window = SmartPot()

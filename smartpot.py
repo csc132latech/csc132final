@@ -27,7 +27,7 @@ class SmartPot(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         # variable containing the frame
-        container = tk.Frame(self, width=800, height=640)
+        container = tk.Frame(self)
 
         container.pack(side="top", fill="both", expand=True)
 
@@ -93,7 +93,7 @@ class HomePage(tk.Frame):
 
 
         # test graph values
-        f = Figure(figsize=(5,5), dpi=100)
+        f = Figure(figsize=(2,2), dpi=100)
         a = f.add_subplot(111)
         a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
 
@@ -162,5 +162,6 @@ def currentMoisture(channel):
 
 #create new instance of GUI class
 window = SmartPot()
+
 window.mainloop()
 

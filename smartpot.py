@@ -14,14 +14,13 @@ from matplotlib import style
 style.use('ggplot')
 import datetime
 from datetime import datetime
-# from time import sleep
-# import spidev
-   
-# spi = spidev.SpiDev()
-# spi.open(0,0)
-# spi.max_speed_hz = 250000
+
 
 Demo = True # Use True to activate elements for testing without input data
+
+# Setup graph figure
+f = Figure(figsize=(2,2), dpi=100)
+a = f.add_subplot
 
 #Animation function
 def animate(i):
@@ -36,6 +35,7 @@ def animate(i):
             x = matplotlib.dates.date2num(x)
             xList.append(int(x))
             yList.append(int(y))
+
     a.clear()
     a.plot(xList, yList)
 
@@ -124,63 +124,6 @@ class HomePage(tk.Frame):
 
             
 
-    
-
-
-    #function for changing listed moisture sensor value
-def currentMoisture(channel):
-    datetime_current = datetime.datetime.now()
-    if Demo == True:
-        moisture_level = random.randint(50, 65)
-        poll_update = {datetime_current: moisture_level}
-        return poll_update
-    
-    # else:
-    #     assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
-
-    #     if channel:
-    #         cbyte = 0b11000000
-    #     else:
-    #         cbyte = 0b10000000
-
-    #     r = spi.xfer2([1,cbyte,0])
-    #     return ((r[1] & 31) << 6) + (r[2] >> 2)
-
-    #     try:    
-    #         channel = 0
-    #         channeldata = poll_sensor(channel)
-
-
-    #         voltage = round(((channeldata * 3300)/1024),0)
-    #         moisture_level = round(voltage/280)
-    #         #print moisture_level
-
-    #         sleep(2)
-
-    #     finally:
-    #         spi.close()
-    #         #print "/n All cleaned up."
-    #     moisture_level = moisture_level * 10
-    #     return moisture_level
-
-            #function for changing listed moisture sensor value
-
-
-# def currentPhoto(self):
-#     photo_level = 0
-#     if Demo == True:
-#         # demo number generation
-#         photo_level = random.randint(0, 1000)
-#         return photo_level
-#     else:
-#         pass
-#         # actual sensor calculation
-
-#         #return photo_level
-
-# Setup graph figure
-f = Figure(figsize=(2,2), dpi=100)
-a= f.add_subplot
 
 #create new instance of GUI class
 window = SmartPot()

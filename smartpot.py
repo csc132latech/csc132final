@@ -9,16 +9,36 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2TkAgg)
 from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
+style.use('ggplot')
 import datetime
+from datetime import datetime
 # from time import sleep
 # import spidev
-
    
 # spi = spidev.SpiDev()
 # spi.open(0,0)
 # spi.max_speed_hz = 250000
 
 Demo = True # Use True to activate elements for testing without input data
+
+#Animation function
+def animate(i):
+    pullData = open("sampleText.txt", "r").read()
+    dataList = pullData.split('\n')
+    xList = []
+    yList = []
+    for eachLine in dataList:
+        if len(eachLine) > 1:
+            x, y = eachLine.split(',')
+            x = datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
+            x = matplotlib.dates.date2num(x)
+            xList.append(int(x))
+            yList.append(int(y))
+    a.clear()
+    a.plot(xList, yList)
+
 
 # class for creating the window
 class SmartPot(tk.Tk):
@@ -92,14 +112,6 @@ class HomePage(tk.Frame):
         moistHeartbeat.grid(row=1, column=4, sticky='nsew')
 
 
-        # test graph values
-        if Demo == True:
-            f = Figure(figsize=(2,2), dpi=100)
-            a = f.add_subplot(111)
-            a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
-        else:
-            pass
-
         # basic plot funtions for embedding a photo and moisture monitor graph
         photoplot = FigureCanvasTkAgg(f, self)
         photoplot.draw()
@@ -108,7 +120,10 @@ class HomePage(tk.Frame):
         moistplot = FigureCanvasTkAgg(f, self)
         moistplot.draw()
         moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=10, pady=10)
-   
+
+
+            
+
     
 
 
@@ -163,8 +178,12 @@ def currentMoisture(channel):
 
 #         #return photo_level
 
+# Setup graph figure
+f = Figure(figsize=(2,2), dpi=100)
+a= f.add_subplot
+
 #create new instance of GUI class
 window = SmartPot()
-
+ani = animation.FuncAnimation(f, animate, interval=1000)
 window.mainloop()
 

@@ -11,6 +11,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
+import matplotlib.pyplot as plt
 style.use('ggplot')
 import datetime
 from datetime import datetime
@@ -19,8 +20,9 @@ from datetime import datetime
 Demo = True # Use True to activate elements for testing without input data
 
 # Setup graph figure
-f = Figure(figsize=(2,2), dpi=100)
-a = f.add_subplot
+# f = Figure(figsize=(2,2), dpi=100)
+# a = f.add_subplot
+f, a = plt.subplots()
 
 #Animation function
 def animate(i):
@@ -28,6 +30,7 @@ def animate(i):
     dataList = pullData.split('\n')
     xList = []
     yList = []
+    global a
     for eachLine in dataList:
         if len(eachLine) > 1:
             x, y = eachLine.split(',')
@@ -35,9 +38,11 @@ def animate(i):
             x = matplotlib.dates.date2num(x)
             xList.append(int(x))
             yList.append(int(y))
+            print str(x)
+            print str(y)
 
     a.clear()
-    a.plot(xList, yList)
+    a.plot(xList, yList)        
 
 
 # class for creating the window
@@ -75,10 +80,15 @@ class SmartPot(tk.Tk):
 # Sets up the Home Page
 class HomePage(tk.Frame):
 
+
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text = "Smart Pot", font='Arial, 16')
         label.grid(row=0, column=0, columnspan=5, sticky='nsew')
+
+        self.moistValueCur = tk.IntVar()
+        self.photoValueCur = tk.IntVar()
 
         moistLabel = tk.Label(self, text = "Moisture Level", padx=10)
         moistLabel.grid(row=1, column=0, sticky='nsew')
@@ -97,13 +107,19 @@ class HomePage(tk.Frame):
         desiredLabel = tk.Label(self, text="Desired Values", padx=10)
         desiredLabel.grid(row=3, column=0, columnspan=2, sticky='sew')
 
-        moistValueDesired = tk.Label(self, text="0%", background= 'white', font='Arial, 12', padx=10, pady=5)
+        moistValueDesired = tk.Label(self, textvariable=(self.moistValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
         moistValueDesired.config(relief='sunken')
         moistValueDesired.grid(row=4, column=0, sticky="nsew")
 
-        photoValueDesired = tk.Label(self, text="0 lux", background= 'white', font='Arial, 12', padx=10, pady=5)
+        moistDesiredSet = tk.Scale(self, from_=0, to=100, orient='horizontal', variable= self.moistValueCur)
+        moistDesiredSet.grid(row=5, column=0, sticky='nsew')
+
+        photoValueDesired = tk.Label(self, textvariable=(self.photoValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
         photoValueDesired.config(relief='sunken')
         photoValueDesired.grid(row=4, column=1, sticky="nsew")
+
+        photoDesiredSet = tk.Scale(self, from_=0, to=100,orient='horizontal', variable= self.photoValueCur)
+        photoDesiredSet.grid(row=5, column=1, sticky='nsew')
 
         photoHeartbeat = tk.Label(self, text = "Photo Monitor")
         photoHeartbeat.grid(row=1, column=3, sticky='nsew')
@@ -120,6 +136,7 @@ class HomePage(tk.Frame):
         moistplot = FigureCanvasTkAgg(f, self)
         moistplot.draw()
         moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=10, pady=10)
+
 
 
             

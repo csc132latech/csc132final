@@ -7,9 +7,11 @@ import spidev
 from time import sleep
 import spidev
 
-spi = spidev.SpiDev()
-spi.open(0,0)
-spi.max_speed_hz = 250000
+Debug = True
+
+# spi = spidev.SpiDev()
+# spi.open(0,0)
+# spi.max_speed_hz = 250000
 
 def poll_sensor(channel):
     assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
@@ -24,10 +26,10 @@ def poll_sensor(channel):
 
 
 while True:
-    writeData = open('sampleText.txt', 'w')
+    writeData = open('sampleText.txt', 'a')
     x = datetime.datetime.now()
     if Debug == True:
-        y= randint(50, 65)
+        y= randint(50, 195)
     else:
         channel = 0
         channeldata = poll_sensor(channel)
@@ -41,4 +43,8 @@ while True:
     writeData.flush()
     strand = (str(x) + ' , ' + str(y))
     print strand
-    sleep(60)
+    sleep(5)
+
+
+
+

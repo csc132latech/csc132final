@@ -19,10 +19,12 @@ from datetime import datetime, timedelta
 
 Demo = True # Use True to activate elements for testing without input data
 
-# Setup graph figure
-# f = Figure(figsize=(2,2), dpi=100)
-# a = f.add_subplot
+# Setup graph figure for moisture sensor
 f, a = plt.subplots(figsize = (2,2))
+
+# Setup graph figure for light IO
+
+
 
 #Animation function
 def animate(i):
@@ -42,7 +44,7 @@ def animate(i):
             print str(y)
 
     a.clear()
-    a.plot_date(xList, yList)      
+    a.plot_date(xList, yList, 'b')      
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
 

@@ -23,10 +23,10 @@ Demo = True # Use True to activate elements for testing without input data
 f, a = plt.subplots(figsize = (2,2))
 
 # Setup graph figure for light IO
+g, b =plt.subplots(figsize = (2,2))
 
 
-
-#Animation function
+#Animation moisture function
 def animate(i):
     pullData = open("sampleText.txt", "r").read()
     dataList = pullData.split('\n')
@@ -47,6 +47,28 @@ def animate(i):
     a.plot_date(xList, yList, 'b')      
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
+
+#Animation function
+def animatelight(i):
+    pullData = open("sampleText2.txt", "r").read()
+    dataList = pullData.split('\n')
+    xList = []
+    yList = []
+    global a
+    for eachLine in dataList:
+        if len(eachLine) > 1:
+            x, y = eachLine.split(',')
+            x = datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
+            # x = matplotlib.dates.date2num(x)
+            xList.append((x))
+            yList.append(int(y))
+            print str(x)
+            print str(y)
+
+    b.clear()
+    b.plot_date(xList, yList, 'b')      
+    b.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
+    b.set_ylim([0,1.5])
 
 # class for creating the window
 class SmartPot(tk.Tk):
@@ -139,7 +161,7 @@ class HomePage(tk.Frame):
 
 
         #basic plot funtions for embedding a photo and moisture monitor graph
-        photoplot = FigureCanvasTkAgg(f, self)
+        photoplot = FigureCanvasTkAgg(g, self)
         photoplot.draw()
         photoplot.get_tk_widget().grid(row=2, rowspan=6, column=3, sticky="nsew", padx=10, pady=10)
 
@@ -155,5 +177,6 @@ class HomePage(tk.Frame):
 #create new instance of GUI class
 window = SmartPot()
 ani = animation.FuncAnimation(f, animate, interval=1000)
+ani2 = animation.FuncAnimation(g, animatelight, interval=1000)
 window.mainloop()
 

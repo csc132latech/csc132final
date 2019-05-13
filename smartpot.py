@@ -14,7 +14,7 @@ from matplotlib import style
 import matplotlib.pyplot as plt
 style.use('ggplot')
 import datetime
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 Demo = True # Use True to activate elements for testing without input data
@@ -22,7 +22,7 @@ Demo = True # Use True to activate elements for testing without input data
 # Setup graph figure
 # f = Figure(figsize=(2,2), dpi=100)
 # a = f.add_subplot
-f, a = plt.subplots()
+f, a = plt.subplots(figsize = (2,2))
 
 #Animation function
 def animate(i):
@@ -35,15 +35,16 @@ def animate(i):
         if len(eachLine) > 1:
             x, y = eachLine.split(',')
             x = datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
-            x = matplotlib.dates.date2num(x)
-            xList.append(int(x))
+            # x = matplotlib.dates.date2num(x)
+            xList.append((x))
             yList.append(int(y))
             print str(x)
             print str(y)
 
     a.clear()
-    a.plot_date(xList[(len(xList)-10):(len(xList)) ], yList[(len(yList)-10):(len(yList))])        
-
+    a.plot_date(xList, yList)      
+    a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
+    a.set_ylim([0,100])
 
 # class for creating the window
 class SmartPot(tk.Tk):

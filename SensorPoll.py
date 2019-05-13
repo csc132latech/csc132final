@@ -29,7 +29,7 @@ while True:
     writeData = open('sampleText.txt', 'a')
     x = datetime.datetime.now()
     if Debug == True:
-        y= randint(50, 195)
+        y= randint(50, 100)
     else:
         channel = 0
         channeldata = poll_sensor(channel)

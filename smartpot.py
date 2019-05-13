@@ -42,7 +42,7 @@ def animate(i):
             print str(y)
 
     a.clear()
-    a.plot_date(xList, yList)        
+    a.plot_date(xList[(len(xList)-10):(len(xList)) ], yList[(len(yList)-10):(len(yList))])        
 
 
 # class for creating the window

@@ -22,6 +22,7 @@ Demo = True # Use True to activate elements for testing without input data
 # Setup graph figure for moisture sensor
 f, a = plt.subplots(figsize = (2,2))
 
+
 # Setup graph figure for light IO
 g, b =plt.subplots(figsize = (2,2))
 
@@ -48,6 +49,7 @@ def animate(i):
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
 
+
 #Animation function
 def animatelight(i):
     pullData = open("sampleText2.txt", "r").read()
@@ -66,9 +68,9 @@ def animatelight(i):
             print str(y)
 
     b.clear()
-    b.plot_date(xList, yList, 'b')      
+    b.plot_date(xList, yList, 'b', color='green')      
     b.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
-    b.set_ylim([0,1.5])
+    b.set_ylim([-0.5,1.5])
 
 # class for creating the window
 class SmartPot(tk.Tk):

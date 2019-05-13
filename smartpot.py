@@ -42,7 +42,7 @@ def animate(i):
             print str(y)
 
     a.clear()
-    a.plot(xList, yList)        
+    a.plot_date(xList, yList)        
 
 
 # class for creating the window
@@ -87,26 +87,33 @@ class HomePage(tk.Frame):
         label = tk.Label(self, text = "Smart Pot", font='Arial, 16')
         label.grid(row=0, column=0, columnspan=5, sticky='nsew')
 
+        #variable labels for Desired Values
         self.moistValueCur = tk.IntVar()
         self.photoValueCur = tk.IntVar()
 
+        #Label for current moisture
         moistLabel = tk.Label(self, text = "Moisture Level", padx=10)
         moistLabel.grid(row=1, column=0, sticky='nsew')
 
+        #Label for current photo
         photoLabel = tk.Label(self, text = "Light Level", padx=20)
         photoLabel.grid(row=1, column=1, sticky='nsew')
 
+        #Label for current moisture value
         moistValueCurrent = tk.Label(self, text="0%", background= 'white', font='Arial, 12', padx=10, pady=5)
         moistValueCurrent.config(relief='sunken')
         moistValueCurrent.grid(row=2, column=0, sticky="nsew")
 
+        #Label for current photo value
         photoValueCurrent = tk.Label(self, text="0 lux", background= 'white', font='Arial, 12', padx=10, pady=5)
         photoValueCurrent.config(relief='sunken')
         photoValueCurrent.grid(row=2, column=1, sticky="nsew")
 
+        #Heading label for desired value
         desiredLabel = tk.Label(self, text="Desired Values", padx=10)
         desiredLabel.grid(row=3, column=0, columnspan=2, sticky='sew')
 
+        #Label for desired moisure
         moistValueDesired = tk.Label(self, textvariable=(self.moistValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
         moistValueDesired.config(relief='sunken')
         moistValueDesired.grid(row=4, column=0, sticky="nsew")
@@ -128,7 +135,7 @@ class HomePage(tk.Frame):
         moistHeartbeat.grid(row=1, column=4, sticky='nsew')
 
 
-        # basic plot funtions for embedding a photo and moisture monitor graph
+        #basic plot funtions for embedding a photo and moisture monitor graph
         photoplot = FigureCanvasTkAgg(f, self)
         photoplot.draw()
         photoplot.get_tk_widget().grid(row=2, rowspan=6, column=3, sticky="nsew", padx=10, pady=10)

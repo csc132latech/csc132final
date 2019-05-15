@@ -38,6 +38,7 @@ def animate(i):
     xList = []
     yList = []
     global a
+    desiredval = frame.getmoist()
 
     for eachLine in dataList:
         if len(eachLine) > 1:
@@ -51,10 +52,11 @@ def animate(i):
 
     a.clear() 
     a.plot_date(xList, yList, 'b')  
+    a.axhline(desiredval, color = 'k')
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
 
-    print y
+    
     frame.setmoist(y)
 
     

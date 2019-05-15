@@ -16,6 +16,8 @@ style.use('ggplot')
 import datetime
 from datetime import datetime, timedelta
 
+matplotlib.rcParams.update({'font.size': 4})
+
 
 Demo = True # Use True to activate elements for testing without input data
 
@@ -26,6 +28,8 @@ f, a = plt.subplots(figsize = (2,2))
 # Setup graph figure for light IO
 g, b =plt.subplots(figsize = (2,2))
 
+#global moisture value
+moisture = 0
 
 #Animation moisture function
 def animate(i):
@@ -34,6 +38,7 @@ def animate(i):
     xList = []
     yList = []
     global a
+
     for eachLine in dataList:
         if len(eachLine) > 1:
             x, y = eachLine.split(',')
@@ -41,16 +46,17 @@ def animate(i):
             # x = matplotlib.dates.date2num(x)
             xList.append((x))
             yList.append(int(y))
-            print str(x)
-            print str(y)
+            #print str(x)
+            #print str(y)
 
     a.clear()
-    a.plot_date(xList, yList, 'b')      
+    a.plot_date(xList, yList, 'b')   
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
+    
 
 
-#Animation function
+#Animation Light function
 def animatelight(i):
     pullData = open("sampleText2.txt", "r").read()
     dataList = pullData.split('\n')
@@ -64,8 +70,8 @@ def animatelight(i):
             # x = matplotlib.dates.date2num(x)
             xList.append((x))
             yList.append(int(y))
-            print str(x)
-            print str(y)
+            #print str(x)
+            #print str(y)
 
     b.clear()
     b.plot_date(xList, yList, 'b', color='green')      
@@ -104,9 +110,9 @@ class SmartPot(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+
 # Sets up the Home Page
 class HomePage(tk.Frame):
-
 
 
     def __init__(self, parent, controller):
@@ -118,21 +124,22 @@ class HomePage(tk.Frame):
         self.moistValueCur = tk.IntVar()
         self.photoValueCur = tk.IntVar()
 
+
         #Label for current moisture
         moistLabel = tk.Label(self, text = "Moisture Level", padx=10)
         moistLabel.grid(row=1, column=0, sticky='nsew')
 
         #Label for current photo
-        photoLabel = tk.Label(self, text = "Light Level", padx=20)
+        photoLabel = tk.Label(self, text = "Light Timer", padx=20)
         photoLabel.grid(row=1, column=1, sticky='nsew')
 
         #Label for current moisture value
-        moistValueCurrent = tk.Label(self, text="0%", background= 'white', font='Arial, 12', padx=10, pady=5)
+        moistValueCurrent = tk.Label(self, text='0%', background= 'white', font='Arial, 12', padx=10, pady=5)
         moistValueCurrent.config(relief='sunken')
         moistValueCurrent.grid(row=2, column=0, sticky="nsew")
 
         #Label for current photo value
-        photoValueCurrent = tk.Label(self, text="0 lux", background= 'white', font='Arial, 12', padx=10, pady=5)
+        photoValueCurrent = tk.Label(self, text="0 state", background= 'white', font='Arial, 12', padx=10, pady=5)
         photoValueCurrent.config(relief='sunken')
         photoValueCurrent.grid(row=2, column=1, sticky="nsew")
 
@@ -145,19 +152,24 @@ class HomePage(tk.Frame):
         moistValueDesired.config(relief='sunken')
         moistValueDesired.grid(row=4, column=0, sticky="nsew")
 
+        #Slider for Moisture
         moistDesiredSet = tk.Scale(self, from_=0, to=100, orient='horizontal', variable= self.moistValueCur)
         moistDesiredSet.grid(row=5, column=0, sticky='nsew')
 
+        #Label for light timer desired value
         photoValueDesired = tk.Label(self, textvariable=(self.photoValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
         photoValueDesired.config(relief='sunken')
         photoValueDesired.grid(row=4, column=1, sticky="nsew")
 
+        #Slider for light timer
         photoDesiredSet = tk.Scale(self, from_=0, to=100,orient='horizontal', variable= self.photoValueCur)
         photoDesiredSet.grid(row=5, column=1, sticky='nsew')
 
-        photoHeartbeat = tk.Label(self, text = "Photo Monitor")
+        #Label for light plot
+        photoHeartbeat = tk.Label(self, text = "Light Monitor")
         photoHeartbeat.grid(row=1, column=3, sticky='nsew')
 
+        #Label for moisture plot
         moistHeartbeat = tk.Label(self, text = "Moisture Monitor")
         moistHeartbeat.grid(row=1, column=4, sticky='nsew')
 
@@ -173,12 +185,16 @@ class HomePage(tk.Frame):
 
 
 
-            
 
 
 #create new instance of GUI class
 window = SmartPot()
+
+#animation moisture plot
 ani = animation.FuncAnimation(f, animate, interval=1000)
+
+#animate light plot
 ani2 = animation.FuncAnimation(g, animatelight, interval=1000)
+
 window.mainloop()
 

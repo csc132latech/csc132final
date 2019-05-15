@@ -17,18 +17,18 @@ import datetime
 from datetime import datetime, timedelta
 
 #set plot font size
-matplotlib.rcParams.update({'font.size': 4})
+matplotlib.rcParams.update({'font.size': 12})
 
 
 Demo = True # Use True to activate elements for testing without input date
 
 
 # Setup graph figure for moisture sensor
-f, a = plt.subplots(figsize = (2,2))
+f, a = plt.subplots(figsize = (8,8))
 
 
 # Setup graph figure for light IO
-g, b =plt.subplots(figsize = (2,2))
+g, b =plt.subplots(figsize = (8,8))
 
 
 #Animation moisture function

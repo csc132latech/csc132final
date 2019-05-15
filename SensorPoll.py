@@ -77,7 +77,8 @@ while True:
 
         voltage = round(((channeldata * 3300)/1024),0)
         moisture_level = round(voltage/280)
-        y= moisture_level
+        moisture_level = moisture_level*10
+        y= int(moisture_level)
 
     writeData.write(str(x) + ',' + str(y) + '\n')
     writeData.flush()

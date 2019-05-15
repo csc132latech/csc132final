@@ -141,7 +141,7 @@ class HomePage(tk.Frame, SmartPot):
         moistLabel = tk.Label(self, text = "Moisture Level", padx=10)
         moistLabel.grid(row=1, column=0, sticky='nsew')
 
-        #Label for current photo
+        #Label for current photo state
         photoLabel = tk.Label(self, text = "Light State", padx=20)
         photoLabel.grid(row=1, column=1, sticky='nsew')
 
@@ -150,7 +150,7 @@ class HomePage(tk.Frame, SmartPot):
         moistValueCurrent.config(relief='sunken')
         moistValueCurrent.grid(row=2, column=0, sticky="nsew")
 
-        #Label for current photo value
+        #Label for current photo state value
         global photoValueCurrent; photoValueCurrent = tk.Label(self, text="0 state", background= 'white', font='Arial, 12', padx=10, pady=5)
         photoValueCurrent.config(relief='sunken')
         photoValueCurrent.grid(row=2, column=1, sticky="nsew")
@@ -195,12 +195,15 @@ class HomePage(tk.Frame, SmartPot):
         moistplot.draw()
         moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=10, pady=10)
 
+    #class function for getting desired moisture value for line graph
     def getmoist(self):
         return moistDesiredSet.get()
 
+    #class function for getting current moisture for label update
     def setmoist(self, val):
         moistValueCurrent['text'] = val + '%'
 
+    #class function for getting current photo state
     def setstate(self, val):
         photoValueCurrent['text'] = val
 

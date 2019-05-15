@@ -16,10 +16,12 @@ style.use('ggplot')
 import datetime
 from datetime import datetime, timedelta
 
+#set plot font size
 matplotlib.rcParams.update({'font.size': 4})
 
 
-Demo = True # Use True to activate elements for testing without input data
+Demo = True # Use True to activate elements for testing without input date
+
 
 # Setup graph figure for moisture sensor
 f, a = plt.subplots(figsize = (2,2))
@@ -28,8 +30,6 @@ f, a = plt.subplots(figsize = (2,2))
 # Setup graph figure for light IO
 g, b =plt.subplots(figsize = (2,2))
 
-#global moisture value
-moisture = 0
 
 #Animation moisture function
 def animate(i):
@@ -49,10 +49,14 @@ def animate(i):
             #print str(x)
             #print str(y)
 
-    a.clear()
-    a.plot_date(xList, yList, 'b')   
+    a.clear() 
+    a.plot_date(xList, yList, 'b')  
     a.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     a.set_ylim([0,100])
+
+    print y
+    frame.setmoist(y)
+
     
 
 
@@ -78,11 +82,16 @@ def animatelight(i):
     b.set_xlim([(datetime.now() - timedelta(minutes = 1)), datetime.now()])
     b.set_ylim([-0.5,1.5])
 
+    frame.setstate(y)
+
 # class for creating the window
 class SmartPot(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+
+        global moistValueCur; moistValueCur = tk.IntVar()
+        global photoValueCur; photoValueCur = tk.IntVar()
 
         # variable containing the frame
         container = tk.Frame(self)
@@ -95,7 +104,7 @@ class SmartPot(tk.Tk):
         # dictionary containing the various frames
         self.frames = {}
 
-        frame = HomePage(container, self)
+        global frame; frame = HomePage(container, self)
 
         self.frames[HomePage] = frame
 
@@ -112,7 +121,7 @@ class SmartPot(tk.Tk):
 
 
 # Sets up the Home Page
-class HomePage(tk.Frame):
+class HomePage(tk.Frame, SmartPot):
 
 
     def __init__(self, parent, controller):
@@ -120,9 +129,10 @@ class HomePage(tk.Frame):
         label = tk.Label(self, text = "Smart Pot", font='Arial, 16')
         label.grid(row=0, column=0, columnspan=5, sticky='nsew')
 
+
         #variable labels for Desired Values
-        self.moistValueCur = tk.IntVar()
-        self.photoValueCur = tk.IntVar()
+        self.moistValueCur = moistValueCur
+        self.photoValueCur = photoValueCur
 
 
         #Label for current moisture
@@ -130,16 +140,16 @@ class HomePage(tk.Frame):
         moistLabel.grid(row=1, column=0, sticky='nsew')
 
         #Label for current photo
-        photoLabel = tk.Label(self, text = "Light Timer", padx=20)
+        photoLabel = tk.Label(self, text = "Light State", padx=20)
         photoLabel.grid(row=1, column=1, sticky='nsew')
 
         #Label for current moisture value
-        moistValueCurrent = tk.Label(self, text='0%', background= 'white', font='Arial, 12', padx=10, pady=5)
+        global moistValueCurrent; moistValueCurrent = tk.Label(self, text='0%', background= 'white', font='Arial, 12', padx=10, pady=5)
         moistValueCurrent.config(relief='sunken')
         moistValueCurrent.grid(row=2, column=0, sticky="nsew")
 
         #Label for current photo value
-        photoValueCurrent = tk.Label(self, text="0 state", background= 'white', font='Arial, 12', padx=10, pady=5)
+        global photoValueCurrent; photoValueCurrent = tk.Label(self, text="0 state", background= 'white', font='Arial, 12', padx=10, pady=5)
         photoValueCurrent.config(relief='sunken')
         photoValueCurrent.grid(row=2, column=1, sticky="nsew")
 
@@ -153,7 +163,7 @@ class HomePage(tk.Frame):
         moistValueDesired.grid(row=4, column=0, sticky="nsew")
 
         #Slider for Moisture
-        moistDesiredSet = tk.Scale(self, from_=0, to=100, orient='horizontal', variable= self.moistValueCur)
+        global moistDesiredSet; moistDesiredSet = tk.Scale(self, from_=0, to=100, orient='horizontal', variable= self.moistValueCur)
         moistDesiredSet.grid(row=5, column=0, sticky='nsew')
 
         #Label for light timer desired value
@@ -183,12 +193,24 @@ class HomePage(tk.Frame):
         moistplot.draw()
         moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=10, pady=10)
 
+    def getmoist(self):
+        return moistDesiredSet.get()
+
+    def setmoist(self, val):
+        moistValueCurrent['text'] = val + '%'
+
+    def setstate(self, val):
+        photoValueCurrent['text'] = val
+
+
 
 
 
 
 #create new instance of GUI class
 window = SmartPot()
+
+print moistValueCur.get()
 
 #animation moisture plot
 ani = animation.FuncAnimation(f, animate, interval=1000)

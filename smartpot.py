@@ -16,18 +16,21 @@ import matplotlib.pyplot as plt
 style.use('ggplot')
 import datetime
 from datetime import datetime, timedelta
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18, GPIO.OUT)
+GPIO.setup(23, GPIO.OUT)
 
 #set plot font size
 matplotlib.rcParams.update({'font.size': 6})
 
 
 # Setup graph figure for moisture sensor
-f, a = plt.subplots(figsize = (3,3))
+f, a = plt.subplots(figsize = (2.75,3))
 
 
 # Setup graph figure for light IO
-g, b =plt.subplots(figsize = (3,3))
+g, b =plt.subplots(figsize = (2.75,3))
 
 
 #Animation moisture function
@@ -57,6 +60,11 @@ def animate(i):
 
     
     frame.setmoist(y)
+    if desiredval > (int(y)+10):
+        GPIO.output(23, 1)
+    elif desiredval < (int(y)-10):
+        GPIO.output(23, 0)
+        
 
     
 
@@ -88,9 +96,9 @@ def animatelight(i):
 #button function for switching light
 def lightswitch():
     if GPIO.input(18) == 1:
-        GPIO.setmode(18, 0)
+        GPIO.output(18, 0)
     else:
-        GPIO.setmode(18, 1)
+        GPIO.output(18, 1)
     
 
 # class for creating the window
@@ -159,6 +167,7 @@ class HomePage(tk.Frame, SmartPot):
         global moistValueCurrent; moistValueCurrent = tk.Label(self, text='0%', background= 'white', font='Arial, 12', padx=10, pady=5)
         moistValueCurrent.config(relief='sunken')
         moistValueCurrent.grid(row=2, column=0, sticky="nsew")
+        moistValueCurrent.config(width = 8)
 
         #Label for current photo state value
         global photoValueCurrent; photoValueCurrent = tk.Label(self, text="0 state", background= 'white', font='Arial, 12', padx=10, pady=5)
@@ -183,8 +192,9 @@ class HomePage(tk.Frame, SmartPot):
         photoValueDesired.grid(row=3, column=1, sticky="sew")
 
         #I/O button for light
-        photoDesiredSet = tk.Button(self, text = 'ON/OFF', command = switch)
+        photoDesiredSet = tk.Button(self, text = 'ON/OFF', command = lightswitch)
         photoDesiredSet.grid(row=4, rowspan=2, column=1, sticky='nsew')
+        photoDesiredSet.config(width = 5)
 
         #Label for light plot
         photoHeartbeat = tk.Label(self, text = "Light Monitor")
@@ -198,11 +208,11 @@ class HomePage(tk.Frame, SmartPot):
         #basic plot funtions for embedding a photo and moisture monitor graph
         photoplot = FigureCanvasTkAgg(g, self)
         photoplot.draw()
-        photoplot.get_tk_widget().grid(row=2, rowspan=6, column=3, sticky="nsew", padx=10, pady=10)
+        photoplot.get_tk_widget().grid(row=2, rowspan=6, column=3, sticky="nsew", padx=2, pady=10)
 
         moistplot = FigureCanvasTkAgg(f, self)
         moistplot.draw()
-        moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=10, pady=10)
+        moistplot.get_tk_widget().grid(row=2, rowspan=6, column=4, sticky="nsew", padx=2, pady=10)
 
     #class function for getting desired moisture value for line graph
     def getmoist(self):

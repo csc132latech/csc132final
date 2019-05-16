@@ -1,9 +1,10 @@
 ### Project: "Smart Pot" 132 final project
 ### Description: Touch screen GUI for Raspberry PI
-### app monitors moisture and light levels of a potted plant.
+### app monitors moisture and light state of a potted plant.
 ### Features: Touchscreen GUI, Current data on screen, view plotted historical data by day and month
 
 import Tkinter as tk
+import ttk
 import random
 import matplotlib
 matplotlib.use("TkAgg")
@@ -15,12 +16,10 @@ import matplotlib.pyplot as plt
 style.use('ggplot')
 import datetime
 from datetime import datetime, timedelta
+import RPI.GPIO as GPIO
 
 #set plot font size
 matplotlib.rcParams.update({'font.size': 6})
-
-
-Demo = True # Use True to activate elements for testing without input date
 
 
 # Setup graph figure for moisture sensor
@@ -86,6 +85,14 @@ def animatelight(i):
 
     frame.setstate(y)
 
+#button function for switching light
+def lightswitch():
+    if GPIO.input(18) == 1:
+        GPIO.setmode(18, 0)
+    else:
+        GPIO.setmode(18, 1)
+    
+
 # class for creating the window
 class SmartPot(tk.Tk):
 
@@ -94,6 +101,9 @@ class SmartPot(tk.Tk):
 
         global moistValueCur; moistValueCur = tk.IntVar()
         global photoValueCur; photoValueCur = tk.IntVar()
+
+        #styling
+        tk.Tk.wm_title(self, "Smart Pot")
 
         # variable containing the frame
         container = tk.Frame(self)
@@ -138,7 +148,7 @@ class HomePage(tk.Frame, SmartPot):
 
 
         #Label for current moisture
-        moistLabel = tk.Label(self, text = "Moisture Level", padx=10)
+        moistLabel = tk.Label(self, text = "Moisture Level")
         moistLabel.grid(row=1, column=0, sticky='nsew')
 
         #Label for current photo state
@@ -157,7 +167,7 @@ class HomePage(tk.Frame, SmartPot):
 
         #Heading label for desired value
         desiredLabel = tk.Label(self, text="Desired Values", padx=10)
-        desiredLabel.grid(row=3, column=0, columnspan=2, sticky='sew')
+        desiredLabel.grid(row=3, column=0, columnspan=1, sticky='sew')
 
         #Label for desired moisure
         moistValueDesired = tk.Label(self, textvariable=(self.moistValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
@@ -168,14 +178,13 @@ class HomePage(tk.Frame, SmartPot):
         global moistDesiredSet; moistDesiredSet = tk.Scale(self, from_=0, to=100, orient='horizontal', variable= self.moistValueCur)
         moistDesiredSet.grid(row=5, column=0, sticky='nsew')
 
-        #Label for light timer desired value
-        photoValueDesired = tk.Label(self, textvariable=(self.photoValueCur), background= 'white', font='Arial, 14', padx=10, pady=5)
-        photoValueDesired.config(relief='sunken')
-        photoValueDesired.grid(row=4, column=1, sticky="nsew")
+        #Label for light i/o button value
+        photoValueDesired = tk.Label(self, text='Light Switch', padx = 10)
+        photoValueDesired.grid(row=3, column=1, sticky="sew")
 
-        #Slider for light timer
-        photoDesiredSet = tk.Scale(self, from_=0, to=100,orient='horizontal', variable= self.photoValueCur)
-        photoDesiredSet.grid(row=5, column=1, sticky='nsew')
+        #I/O button for light
+        photoDesiredSet = tk.Button(self, text = 'ON/OFF', command = switch)
+        photoDesiredSet.grid(row=4, rowspan=2, column=1, sticky='nsew')
 
         #Label for light plot
         photoHeartbeat = tk.Label(self, text = "Light Monitor")
